@@ -1,0 +1,49 @@
+Exe1
+
+class Lojinha:
+    def _init_(self):
+        self.produtos = {}
+        
+    def adicionar_produto(self, nome, preco):
+        self.produtos[nome] = preco
+    
+    def calcular_total(self, itens):
+        total = 0
+        combo_desconto = {}
+        
+        for item, quantidade in itens.items():
+            if item in self.produtos:
+                preco_unitario = self.produtos[item]
+                total += preco_unitario * quantidade
+                
+                # Verifica desconto para combos
+                if item in combo_desconto:
+                    combo_desconto[item] += quantidade
+                else:
+                    combo_desconto[item] = quantidade
+
+        # Aplica desconto para compras acima de R$ 100
+        if total > 100:
+            total *= 0.9  # 10% de desconto
+
+        # Aplica desconto de combo (50% no segundo item em diante)
+        for item, quantidade in combo_desconto.items():
+            if quantidade > 1:
+                desconto_combo = (quantidade - 1) * (self.produtos[item] * 0.5)
+                total -= desconto_combo
+
+        return total
+
+# Exemplo de uso
+lojinha = Lojinha()
+lojinha.adicionar_produto("Livro de TI", 50)
+lojinha.adicionar_produto("Curso de Meditação", 70)
+
+# Cliente compra 2 livros de TI e 1 curso de meditação
+itens_compra = {
+    "Livro de TI": 2,
+    "Curso de Meditação": 1
+}
+
+total = lojinha.calcular_total(itens_compra)
+print(f"O total da compra é: R$ {total:.2f}")
